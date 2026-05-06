@@ -12,12 +12,16 @@ class Character
         Nom = nom;
         Health = health;
         AttackPower = attackPower;
-
     }
 
     public void TakeDamage(int damage)
     {
         Health -= damage;
+    }
+
+    public void Attack(Character target)
+    {
+        target.TakeDamage(AttackPower);
     }
 }
 
@@ -33,9 +37,23 @@ class Player : Character
 class Ennemy : Character
 {
 
-    public Ennemy(string nom, int health, int attackPower, int damage)
+    public Ennemy(string nom, int health, int attackPower)
         : base(nom, health, attackPower)
     {
 
+    }
+}
+
+class Program
+{
+
+    static void Main()
+    {
+        Player player = new Player("Benjamin", 100, 20);
+        Ennemy zombie = new Ennemy("Zombie", 50, 10);
+
+        player.Attack(zombie);
+
+        Console.WriteLine(zombie.Health);
     }
 }

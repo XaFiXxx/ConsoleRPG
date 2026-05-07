@@ -6,12 +6,14 @@ class Character
 {
     public string Nom { get; private set; }
     public int Health { get; private set; }
+    public int MaxHealth { get; private set; }
     public int AttackPower { get; private set; }
 
-    public Character(string nom, int health, int attackPower)
+    public Character(string nom, int health, int maxHealth, int attackPower)
     {
         Nom = nom;
         Health = health;
+        MaxHealth = maxHealth;
         AttackPower = attackPower;
     }
 
@@ -33,7 +35,12 @@ class Character
 
     public void Heal(int amountHeal)
     {
-        Health += amountHeal;
+        Health += (amountHeal);
+
+        if (Health > MaxHealth)
+        {
+            Health = MaxHealth;
+        }
     }
 
     public bool IsDead()
@@ -45,17 +52,32 @@ class Character
 class Player : Character
 {
     public int AmountHeal { get; private set; }
-    public Player(string nom, int health, int attackPower, int amountHeal)
-        : base(nom, health, attackPower)
+    public int HealQuantity { get; private set; }
+    public Player(string nom, int health, int maxHealth, int attackPower, int amountHeal, int healQuantity)
+        : base(nom, health, maxHealth, attackPower)
     {
         AmountHeal = amountHeal;
+        HealQuantity = healQuantity;
+    }
+
+    public void UseHeal()
+    {
+        if (HealQuantity > 0)
+        {
+            Heal(AmountHeal);
+            HealQuantity--;
+        }
+        else
+        {
+            Console.WriteLine("⚠️ Tu n'as plus de potions...!");
+        }
     }
 }
 
 class Ennemy : Character
 {
-    public Ennemy(string nom, int health, int attackPower)
-        : base(nom, health, attackPower)
+    public Ennemy(string nom, int health, int maxHealth, int attackPower)
+        : base(nom, health, maxHealth, attackPower)
     {
 
     }
@@ -65,8 +87,8 @@ class Program
 {
     static void Main()
     {
-        Player player = new Player("Benjamin", 100, 20, 20);
-        Ennemy zombie = new Ennemy("Zombie", 150, 10);
+        Player player = new Player("Benjamin", 100, 100, 20, 20, 3);
+        Ennemy zombie = new Ennemy("Zombie", 150, 150, 10);
 
         Console.WriteLine($"Bienvenue dans mon mini RPG {player.Nom}");
 
@@ -94,8 +116,9 @@ class Program
                     break;
 
                 case "2":
-                    player.Heal(player.AmountHeal);
+                    player.UseHeal();
                     Console.WriteLine($"{player.Nom} HP : {player.Health}");
+                    Console.WriteLine($"Potions restantes : {player.HealQuantity}");
                     break;
 
                 case "4":

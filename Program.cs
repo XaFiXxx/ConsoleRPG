@@ -53,11 +53,13 @@ class Player : Character
 {
     public int AmountHeal { get; private set; }
     public int HealQuantity { get; private set; }
-    public Player(string nom, int health, int maxHealth, int attackPower, int amountHeal, int healQuantity)
+    public int Xp { get; private set; }
+    public Player(string nom, int health, int maxHealth, int attackPower, int amountHeal, int healQuantity, int xp)
         : base(nom, health, maxHealth, attackPower)
     {
         AmountHeal = amountHeal;
         HealQuantity = healQuantity;
+        Xp = xp;
     }
 
     public void UseHeal()
@@ -71,6 +73,11 @@ class Player : Character
         {
             Console.WriteLine("⚠️ Tu n'as plus de potions...!");
         }
+    }
+
+    public void AddXp()
+    {
+        Xp += 50;
     }
 }
 
@@ -87,59 +94,65 @@ class Program
 {
     static void Main()
     {
-        Player player = new Player("Benjamin", 100, 100, 20, 20, 3);
-        Ennemy zombie = new Ennemy("Zombie", 150, 150, 10);
+        Player player = new Player("Benjamin", 100, 100, 20, 20, 3, 0);
 
         Console.WriteLine($"Bienvenue dans mon mini RPG {player.Nom}");
 
-
-        while (!player.IsDead() && !zombie.IsDead())
+        while (!player.IsDead())
         {
-            Console.WriteLine("1. Attaquer l'ennemi");
-            Console.WriteLine("2. Prendre une potion");
-            Console.WriteLine("4. FUIR...!");
+            Ennemy zombie = new Ennemy("Zombie", 150, 150, 10);
 
-            string input = Console.ReadLine() ?? "";
-
-
-            switch (input)
+            while (!zombie.IsDead() && !player.IsDead())
             {
-                case "1":
-                    player.Attack(zombie);
-                    Console.WriteLine($"{zombie.Nom} HP : {zombie.Health}");
+                Console.WriteLine("1. Attaquer l'ennemi");
+                Console.WriteLine("2. Prendre une potion");
+                Console.WriteLine("4. FUIR...!");
 
-                    if (zombie.IsDead())
+                string input = Console.ReadLine() ?? "";
+
+
+                switch (input)
+                {
+                    case "1":
+                        player.Attack(zombie);
+                        Console.WriteLine($"{zombie.Nom} HP : {zombie.Health}");
+
+                        if (zombie.IsDead())
+                            break;
+
+                        zombie.Attack(player);
+                        Console.WriteLine($"{player.Nom} HP : {player.Health}");
                         break;
 
-                    zombie.Attack(player);
-                    Console.WriteLine($"{player.Nom} HP : {player.Health}");
-                    break;
+                    case "2":
+                        player.UseHeal();
+                        Console.WriteLine($"{player.Nom} HP : {player.Health}");
+                        Console.WriteLine($"Potions restantes : {player.HealQuantity}");
+                        break;
 
-                case "2":
-                    player.UseHeal();
-                    Console.WriteLine($"{player.Nom} HP : {player.Health}");
-                    Console.WriteLine($"Potions restantes : {player.HealQuantity}");
-                    break;
+                    case "4":
+                        Console.WriteLine("Tu as quitté le combat..!");
+                        return;
 
-                case "4":
-                    Console.WriteLine("Tu as quitté le combat..!");
-                    return;
+                    default:
+                        Console.WriteLine("❌ Choix invalide..!");
+                        break;
+                }
 
-                default:
-                    Console.WriteLine("❌ Choix invalide..!");
-                    break;
+
             }
 
-
-        }
-
-        if (player.IsDead())
-        {
-            Console.WriteLine($"{player.Nom} est mort !");
-        }
-        else
-        {
-            Console.WriteLine($"{zombie.Nom} est mort ! ☠️");
+            if (player.IsDead())
+            {
+                Console.WriteLine($"{player.Nom} est mort !");
+            }
+            else
+            {
+                Console.WriteLine($"{zombie.Nom} est mort ! ☠️");
+                player.AddXp();
+                Console.WriteLine($"{player.Nom} gagne 50 XP !");
+                Console.WriteLine($"XP total : {player.Xp}");
+            }
         }
     }
 }

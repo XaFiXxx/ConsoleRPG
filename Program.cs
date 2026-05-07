@@ -47,6 +47,12 @@ class Character
     {
         return Health <= 0;
     }
+
+    public void StatsLvlUp()
+    {
+        MaxHealth += 50;
+        AttackPower += 10;
+    }
 }
 
 class Player : Character
@@ -54,12 +60,14 @@ class Player : Character
     public int AmountHeal { get; private set; }
     public int HealQuantity { get; private set; }
     public int Xp { get; private set; }
-    public Player(string nom, int health, int maxHealth, int attackPower, int amountHeal, int healQuantity, int xp)
+    public int Level { get; private set; }
+    public Player(string nom, int health, int maxHealth, int attackPower, int amountHeal, int healQuantity, int xp, int level)
         : base(nom, health, maxHealth, attackPower)
     {
         AmountHeal = amountHeal;
         HealQuantity = healQuantity;
         Xp = xp;
+        Level = level;
     }
 
     public void UseHeal()
@@ -78,6 +86,18 @@ class Player : Character
     public void AddXp()
     {
         Xp += 50;
+        LevelUp();
+    }
+
+    public void LevelUp()
+    {
+        if (Xp >= 100)
+        {
+            Level++;
+            Xp = 0;
+            HealQuantity = 4;
+            StatsLvlUp();
+        }
     }
 }
 
@@ -94,7 +114,7 @@ class Program
 {
     static void Main()
     {
-        Player player = new Player("Benjamin", 100, 100, 20, 20, 3, 0);
+        Player player = new Player("Benjamin", 100, 100, 20, 20, 3, 0, 1);
 
         Console.WriteLine($"Bienvenue dans mon mini RPG {player.Nom}");
 
@@ -151,6 +171,7 @@ class Program
                 Console.WriteLine($"{zombie.Nom} est mort ! ☠️");
                 player.AddXp();
                 Console.WriteLine($"{player.Nom} gagne 50 XP !");
+                Console.WriteLine($"Level : {player.Level}");
                 Console.WriteLine($"XP total : {player.Xp}");
             }
         }

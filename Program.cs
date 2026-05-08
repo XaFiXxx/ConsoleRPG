@@ -20,19 +20,23 @@ class Program
 
         Random random = new Random();
 
+        SaveSystem saveSystem = new SaveSystem();
 
-
-
-        while (!player.IsDead())
+        Ennemy CreateEnemy()
         {
             int randomEnemyIndex = random.Next(0, enemyTypes.Count);
             string randomEnemy = enemyTypes[randomEnemyIndex];
 
-            int enemyHealth = 150 + (player.Level * 15);
+            int enemyHealth = 100 + (player.Level * 15);
             int enemyMaxHealth = enemyHealth;
-            int enemyAttackPower = 10 + (player.Level * 3);
-
+            int enemyAttackPower = 7 + (player.Level * 3);
             Ennemy ennemy = new Ennemy(randomEnemy, enemyHealth, enemyMaxHealth, enemyAttackPower);
+            return ennemy;
+        }
+
+        while (!player.IsDead())
+        {
+            Ennemy ennemy = CreateEnemy();
             Console.WriteLine($"OHHHHHH!!! Un {ennemy.Nom} apparait.");
 
             while (!ennemy.IsDead() && !player.IsDead())
@@ -65,6 +69,8 @@ class Program
 
                     case "4":
                         Console.WriteLine("Tu as quitté le combat..!");
+                        saveSystem.Save(player);
+                        Console.Write("Sauvegarde effectuée");
                         return;
 
                     default:

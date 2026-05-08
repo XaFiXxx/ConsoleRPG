@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 class Character
 {
     public string Nom { get; private set; }

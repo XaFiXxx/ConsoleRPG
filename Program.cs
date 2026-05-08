@@ -13,9 +13,26 @@ class Program
         Console.WriteLine($"Vous possédez aussi {player.HealQuantity} potions.");
         Console.WriteLine($"----------------------------------");
 
+        List<string> enemyTypes = new List<string>();
+        enemyTypes.Add("Zombie");
+        enemyTypes.Add("Skeleton");
+        enemyTypes.Add("Goblin");
+
+        Random random = new Random();
+
+
+
+
         while (!player.IsDead())
         {
-            Ennemy ennemy = new Ennemy("Zombie", 150, 150, 10);
+            int randomEnemyIndex = random.Next(0, enemyTypes.Count);
+            string randomEnemy = enemyTypes[randomEnemyIndex];
+
+            int enemyHealth = 150 + (player.Level * 15);
+            int enemyMaxHealth = enemyHealth;
+            int enemyAttackPower = 10 + (player.Level * 3);
+
+            Ennemy ennemy = new Ennemy(randomEnemy, enemyHealth, enemyMaxHealth, enemyAttackPower);
             Console.WriteLine($"OHHHHHH!!! Un {ennemy.Nom} apparait.");
 
             while (!ennemy.IsDead() && !player.IsDead())
